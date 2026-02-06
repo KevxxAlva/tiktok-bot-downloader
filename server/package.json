@@ -1,13 +1,20 @@
 {
-  "name": "server",
+  "name": "tiktok-downloader-server",
   "version": "1.0.0",
-  "description": "",
+  "description": "Backend API for TikTok video downloader",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js",
+    "dev": "node --watch index.js"
   },
-  "keywords": [],
+  "keywords": ["tiktok", "downloader", "api"],
   "author": "",
-  "license": "ISC",
-  "type": "commonjs"
+  "license": "MIT",
+  "type": "commonjs",
+  "dependencies": {
+    "@tobyg74/tiktok-api-dl": "^1.0.45",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.18.2"
+  }
 }
