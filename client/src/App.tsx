@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Search, Download, Music, Loader2, Video, Sparkles, Zap, Shield, Play, ExternalLink, Heart, Clock, CheckCircle } from 'lucide-react';
+import { Download, Music, Loader2, Activity, Waves } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
 
@@ -21,6 +21,7 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<DownloadResult | null>(null);
   const [error, setError] = useState('');
+  const [mode, setMode] = useState<'video' | 'audio'>('video');
 
   const handleDownload = async () => {
     if (!url) return;
@@ -30,300 +31,183 @@ function App() {
 
     try {
       const response = await axios.get(`/api/download?url=${encodeURIComponent(url)}`);
-      console.log(response.data);
       if (response.data.status === 'success' || response.data.result) {
         setData(response.data);
       } else {
         setError(response.data.error || 'Could not fetch video. Please check the URL.');
       }
     } catch (err: any) {
-      const errorMessage = err.response?.data?.error || 'Error processing request. The link might be invalid or private.';
+      const errorMessage = err.response?.data?.error || 'Error processing request.';
       setError(errorMessage);
-      console.error(err);
     } finally {
       setLoading(false);
     }
   };
 
-  const features = [
-    { icon: Zap, title: 'Lightning Fast', desc: 'Download in seconds', color: 'from-yellow-500 to-orange-500' },
-    { icon: Shield, title: 'No Watermark', desc: 'Clean video output', color: 'from-cyan-500 to-blue-500' },
-    { icon: Music, title: 'Extract Audio', desc: 'Get MP3 files easily', color: 'from-pink-500 to-rose-500' },
-  ];
-
   return (
-    <>
-      {/* Animated Background */}
-      <div className="bg-animated">
-        <div className="orb orb-1" />
-        <div className="orb orb-2" />
-        <div className="orb orb-3" />
-      </div>
+    <div className="min-h-screen w-full flex flex-col items-center py-20 px-4">
+      
+      {/* Brand / Logo */}
+      <motion.div 
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="text-center mb-16 flex flex-col items-center"
+      >
+        <div className="mb-6 text-[#ccff00]">
+          <Waves className="w-16 h-16" strokeWidth={3} />
+        </div>
+        <h1 className="text-5xl md:text-7xl font-black tracking-tighter uppercase mb-4" style={{ fontFamily: 'Inter, sans-serif' }}>
+          TikTok<br className="md:hidden" /> Downloader
+        </h1>
+        <p className="text-gray-400 text-sm md:text-base tracking-widest uppercase font-medium max-w-md">
+          Download videos without watermark.<br />
+          Pure speed. No distractions.
+        </p>
+      </motion.div>
 
-      <div className="min-h-screen w-full flex flex-col items-center justify-center px-4 py-16">
+      {/* Main Container */}
+      <div className="w-full max-w-xl">
         
-        {/* Hero Section */}
+        {/* Input Area */}
         <motion.div 
-          initial={{ opacity: 0, y: -40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-          className="text-center mb-14"
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.2 }}
+          className="mb-10"
         >
-          {/* Logo */}
-          <motion.div 
-            initial={{ scale: 0, rotate: -180 }}
-            animate={{ scale: 1, rotate: 0 }}
-            transition={{ delay: 0.2, type: "spring", stiffness: 150, damping: 15 }}
-            className="flex items-center justify-center mb-8"
-          >
-            <div className="relative group cursor-pointer">
-              {/* Glow effect behind logo */}
-              <div className="absolute inset-0 bg-gradient-to-br from-[#fe2c55] to-[#25f4ee] rounded-3xl blur-2xl opacity-50 group-hover:opacity-75 transition-opacity duration-500" />
-              
-              <div className="relative w-24 h-24 rounded-3xl bg-gradient-to-br from-[#fe2c55] via-[#ff0050] to-[#25f4ee] flex items-center justify-center shadow-2xl transform rotate-3 group-hover:rotate-0 group-hover:scale-110 transition-all duration-500">
-                <Video className="text-white w-12 h-12 drop-shadow-lg" />
-              </div>
-              
-              {/* Sparkle badge */}
-              <motion.div 
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ delay: 0.5, type: "spring" }}
-                className="absolute -bottom-2 -right-2 w-10 h-10 rounded-xl bg-gradient-to-br from-[#25f4ee] to-[#00d4ff] flex items-center justify-center shadow-xl border-2 border-[#0a0a0f]"
-              >
-                <Sparkles className="text-white w-5 h-5" />
-              </motion.div>
-            </div>
-          </motion.div>
-
-          {/* Title */}
-          <motion.h1 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.5 }}
-            className="text-5xl sm:text-6xl md:text-7xl font-black mb-5 tracking-tight"
-          >
-            TikTok<span className="gradient-text">Saver</span>
-          </motion.h1>
-          
-          <motion.p 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4, duration: 0.5 }}
-            className="text-gray-400 text-lg md:text-xl max-w-lg mx-auto leading-relaxed"
-          >
-            Download TikTok videos without watermark.
-            <br />
-            <span className="text-white/90 font-medium">Fast, free, and unlimited.</span>
-          </motion.p>
-        </motion.div>
-
-        {/* Main Input Card */}
-        <motion.div 
-          initial={{ opacity: 0, y: 30, scale: 0.95 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ delay: 0.4, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          className="glass-panel p-8 md:p-12 w-full max-w-2xl"
-        >
-          {/* Input Group */}
-          <div className="relative mb-6">
-            <div className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-500">
-              <Search className="w-6 h-6" />
-            </div>
+          <div className="flex flex-col md:flex-row gap-4 mb-6">
             <input
               type="text"
-              placeholder="Paste TikTok video URL here..."
-              className="input-glow w-full rounded-2xl px-16 py-5 text-lg font-medium"
+              placeholder="PASTE TIKTOK LINK HERE..."
+              className="input-minimal w-full rounded-lg px-6 py-4 text-lg font-bold tracking-wide placeholder:text-gray-600 uppercase"
               value={url}
               onChange={(e) => setUrl(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleDownload()}
             />
-            {url && (
+            
+            {/* Mode Switch (Visual Only for now, purely aesthetic) */}
+            <div className="bg-[#1a1a1a] rounded-lg p-1 flex border border-[#333] shrink-0">
               <button 
-                onClick={() => setUrl('')}
-                className="absolute right-6 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-gray-400 hover:text-white transition-all"
+                onClick={() => setMode('video')}
+                className={`px-6 py-2 rounded font-bold uppercase text-sm transition-colors ${mode === 'video' ? 'bg-[#ccff00] text-black' : 'text-gray-500 hover:text-white'}`}
               >
-                ✕
+                Video
               </button>
-            )}
+              <button 
+                onClick={() => setMode('audio')}
+                className={`px-6 py-2 rounded font-bold uppercase text-sm transition-colors ${mode === 'audio' ? 'bg-[#ccff00] text-black' : 'text-gray-500 hover:text-white'}`}
+              >
+                Audio
+              </button>
+            </div>
           </div>
 
-          {/* Download Button */}
-          <motion.button
-            whileTap={{ scale: 0.97 }}
+          <button
             onClick={handleDownload}
             disabled={loading || !url}
-            className="btn-primary w-full py-5 rounded-2xl text-xl font-bold flex items-center justify-center gap-3"
+            className="btn-lime w-full py-4 rounded-lg text-lg flex items-center justify-center gap-3"
           >
             {loading ? (
               <>
                 <Loader2 className="w-6 h-6 animate-spin" />
-                Processing...
+                PROCESSING
               </>
             ) : (
               <>
-                <Download className="w-6 h-6" />
-                Download Video
+                REVEAL CONTENT
               </>
             )}
-          </motion.button>
-
-          {/* Error Message */}
-          <AnimatePresence>
-            {error && (
-              <motion.div 
-                initial={{ opacity: 0, y: -10, height: 0 }} 
-                animate={{ opacity: 1, y: 0, height: 'auto' }} 
-                exit={{ opacity: 0, y: -10, height: 0 }}
-                className="mt-6 error-box p-5 rounded-2xl text-center font-medium"
-              >
-                {error}
-              </motion.div>
-            )}
-          </AnimatePresence>
+          </button>
         </motion.div>
 
-        {/* Features */}
-        <motion.div 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.6 }}
-          className="flex flex-wrap justify-center gap-4 md:gap-6 mt-12 max-w-3xl px-4"
-        >
-          {features.map((feature, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.7 + index * 0.15 }}
-              className="feature-card flex items-center gap-4"
+        {/* Error Message */}
+        <AnimatePresence>
+          {error && (
+            <motion.div 
+              initial={{ opacity: 0, height: 0 }} 
+              animate={{ opacity: 1, height: 'auto' }}
+              className="mb-8 p-4 bg-red-900/20 border border-red-900/50 text-red-400 text-center uppercase font-bold text-sm tracking-wide rounded"
             >
-              <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${feature.color} flex items-center justify-center shadow-lg`}>
-                <feature.icon className="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <p className="font-bold text-white">{feature.title}</p>
-                <p className="text-gray-500 text-sm">{feature.desc}</p>
-              </div>
+              {error}
             </motion.div>
-          ))}
-        </motion.div>
+          )}
+        </AnimatePresence>
 
-        {/* Result Card */}
+        {/* Result Area */}
         <AnimatePresence>
           {data && (
             <motion.div
-              initial={{ opacity: 0, y: 50, scale: 0.9 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 50, scale: 0.9 }}
-              transition={{ type: "spring", stiffness: 100, damping: 15 }}
-              className="glass-panel p-6 md:p-10 w-full max-w-2xl mt-12 relative overflow-hidden"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 30 }}
+              className="card-matte p-8"
             >
-              {/* Background glows */}
-              <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-bl from-[#25f4ee]/15 to-transparent blur-3xl pointer-events-none" />
-              <div className="absolute bottom-0 left-0 w-72 h-72 bg-gradient-to-tr from-[#fe2c55]/15 to-transparent blur-3xl pointer-events-none" />
+              <div className="text-center mb-8">
+                <p className="text-gray-500 uppercase text-xs font-bold tracking-[0.2em] mb-2">Target Acquired</p>
+                <h3 className="text-white text-xl font-bold line-clamp-1">{data.result.author?.nickname}</h3>
+              </div>
 
-              <div className="flex flex-col md:flex-row gap-8 relative z-10">
-                {/* Video Preview */}
-                <div className="w-full md:w-2/5 shrink-0">
-                  <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-white/10 aspect-[9/16] bg-black group cursor-pointer">
+              <div className="flex flex-col gap-6">
+                {/* Simplified Preview */}
+                <div className="w-full aspect-square md:aspect-video bg-black rounded overflow-hidden relative border border-[#333] group">
+                  {data.result.cover ? (
                     <img 
-                      src={data.result.cover} 
-                      alt="Video thumbnail" 
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                      src={`/api/proxy-image?url=${encodeURIComponent(data.result.cover)}`} 
+                      className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"
+                      alt="Cover"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
-                    
-                    {/* Play button overlay */}
-                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300">
-                      <div className="w-20 h-20 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/20 transform scale-90 group-hover:scale-100 transition-transform">
-                        <Play className="w-10 h-10 text-white ml-1" fill="white" />
-                      </div>
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-gray-700">
+                      <Activity />
                     </div>
-                    
-                    {/* Success Badge */}
-                    <div className="absolute top-4 left-4 px-4 py-2 rounded-full bg-emerald-500/20 backdrop-blur-sm border border-emerald-500/30 flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-emerald-400" />
-                      <span className="text-emerald-400 text-sm font-semibold">Ready</span>
-                    </div>
+                  )}
+                  {/* Overlay text */}
+                  <div className="absolute bottom-0 left-0 w-full p-4 bg-linear-to-t from-black to-transparent">
+                     <p className="text-white text-xs line-clamp-1 opacity-70 font-mono">{data.result.desc}</p>
                   </div>
                 </div>
 
-                {/* Video Info & Download Buttons */}
-                <div className="flex-1 flex flex-col justify-between py-2">
-                  <div>
-                    {/* Author */}
-                    <div className="flex items-center gap-4 mb-6">
-                      <div className="w-14 h-14 rounded-full bg-gradient-to-br from-[#fe2c55] to-[#25f4ee] p-[2px]">
-                        <div className="w-full h-full rounded-full bg-[#0a0a0f] overflow-hidden">
-                          {data.result.author?.avatar ? (
-                            <img src={data.result.author.avatar} className="w-full h-full object-cover" alt="Author" />
-                          ) : (
-                            <div className="w-full h-full bg-gradient-to-br from-[#fe2c55]/50 to-[#25f4ee]/50 flex items-center justify-center">
-                              <Heart className="w-6 h-6 text-white/50" />
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                      <div>
-                        <p className="font-bold text-white text-lg">{data.result.author?.nickname || "TikTok User"}</p>
-                        <p className="text-gray-500 text-sm flex items-center gap-1">
-                          <Heart className="w-3 h-3" /> Video Creator
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* Description */}
-                    <p className="text-gray-400 text-sm leading-relaxed line-clamp-3 mb-8">
-                      {data.result.desc || "TikTok Video"}
-                    </p>
-                  </div>
-
-                  {/* Download Buttons */}
-                  <div className="space-y-4">
+                {/* Action Buttons */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <button 
+                    onClick={() => window.open(data.result.video[0], '_blank')}
+                    className="btn-lime py-3 rounded flex items-center justify-center gap-2 text-sm"
+                  >
+                    <Download className="w-4 h-4" />
+                    DOWNLOAD VIDEO
+                  </button>
+                  
+                  {data.result.music && (
                     <button 
-                      onClick={() => window.open(data.result.video[0], '_blank')}
-                      className="download-btn w-full p-5 rounded-2xl font-bold text-lg flex items-center justify-center gap-3"
+                      onClick={() => window.open(data.result.music, '_blank')}
+                      className="btn-secondary py-3 rounded flex items-center justify-center gap-2 text-sm uppercase"
                     >
-                      <Download className="w-6 h-6" />
-                      Download Video (HD)
-                      <ExternalLink className="w-5 h-5 ml-auto opacity-60" />
+                      <Music className="w-4 h-4" />
+                      DOWNLOAD MP3
                     </button>
-                    
-                    {data.result.music && (
-                      <button 
-                        onClick={() => window.open(data.result.music, '_blank')}
-                        className="download-btn audio-btn w-full p-5 rounded-2xl font-bold text-lg flex items-center justify-center gap-3"
-                      >
-                        <Music className="w-6 h-6" />
-                        Download Audio (MP3)
-                        <ExternalLink className="w-5 h-5 ml-auto opacity-60" />
-                      </button>
-                    )}
-                  </div>
+                  )}
                 </div>
+              </div>
+
+              <div className="mt-8 pt-6 border-t border-[#333] flex justify-between items-center text-xs text-gray-600 uppercase font-mono">
+                <span>Ref: {Math.random().toString(36).substring(7).toUpperCase()}</span>
+                <span className="flex items-center gap-2">
+                  <span className="w-2 h-2 bg-[#ccff00] rounded-full animate-pulse"/>
+                  Ready
+                </span>
               </div>
             </motion.div>
           )}
         </AnimatePresence>
 
-        {/* Footer */}
-        <motion.footer 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1 }}
-          className="mt-20 text-center"
-        >
-          <p className="flex items-center justify-center gap-2 text-gray-500 text-sm font-medium">
-            <Clock className="w-4 h-4" />
-            Fast & Unlimited Downloads
-          </p>
-          <p className="mt-3 text-gray-600 text-xs">
-            © 2026 TikTokSaver • For personal use only
-          </p>
-        </motion.footer>
       </div>
-    </>
+
+      <footer className="mt-auto pt-20 text-center">
+        <p className="text-gray-800 uppercase font-black tracking-widest text-xs">
+          For entertainment purposes only
+        </p>
+      </footer>
+    </div>
   );
 }
 
