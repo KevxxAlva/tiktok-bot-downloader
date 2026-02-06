@@ -1,86 +1,84 @@
-# TikTokSaver - TikTok Downloader
+# TikTokSaver - Descargador de TikTok
 
-A high-performance, minimalist web application to download TikTok videos without watermarks and extract audio (MP3).
+Una aplicación web minimalista de alto rendimiento para descargar videos de TikTok sin marca de agua y extraer audio (MP3).
 
-<img width="1349" height="641" alt="image" src="https://github.com/user-attachments/assets/fcda2dee-57a4-4cbf-8b5f-7fa0e562fa5b" />
+## ⚡ Características
 
-## ⚡ Features
+- **Sin Marca de Agua**: Descarga videos limpios y de alta calidad directamente desde TikTok.
+- **Extracción de Audio**: Soporte para descarga de MP3 con un solo clic.
+- **Interfaz Cyber-Brutalist**: Una interfaz reimaginada con una estética minimalista oscura y acentos en verde lima neón (`#ccff00`).
+- **Enfoque en Privacidad**: Incluye un proxy de imágenes en el servidor para evitar restricciones de hotlinking y proteger la privacidad del usuario.
+- **Responsivo**: Totalmente optimizado para dispositivos de escritorio y móviles.
 
-- **No Watermark**: Downloads clean, high-quality videos directly from TikTok.
-- **Audio Extraction**: One-click MP3 download support.
-- **Cyber-Brutalist UI**: A reimagined interface featuring a minimal dark aesthetic with neon lime accents (`#ccff00`).
-- **Privacy Focused**: Includes a server-side image proxy to bypass hotlinking restrictions and protect user privacy.
-- **Responsive**: Fully optimized for desktop and mobile devices.
-
-## 🛠️ Tech Stack
+## 🛠️ Tecnologías
 
 **Frontend:**
 
-- **React 18** (via Vite)
-- **Tailwind CSS** (v4 compatible)
-- **Framer Motion** (Animations)
-- **Lucide React** (Icons)
+- **React 18** (vía Vite)
+- **Tailwind CSS** (compatible con v4)
+- **Framer Motion** (Animaciones)
+- **Lucide React** (Iconos)
 
 **Backend:**
 
-- **Node.js** & **Express**
+- **Node.js** y **Express**
 - **@tobyg74/tiktok-api-dl** (Scraping/API)
 
-## 🚀 Getting Started
+## 🚀 Comenzando
 
-### Prerequisites
+### Prerrequisitos
 
-- Node.js (v18+ recommended)
-- npm (or bun/yarn)
+- Node.js (v18+ recomendado)
+- npm (o bun/yarn)
 
-### Installation
+### Instalación
 
-1.  **Clone the repository**
+1.  **Clonar el repositorio**
 
-2.  **Install Application Dependencies**
+2.  **Instalar Dependencias de la Aplicación**
 
-    This project is a monorepo structure with `client` and `server` folders.
+    Este proyecto tiene una estructura de monorepo con carpetas `client` y `server`.
 
     ```bash
-    # Install server dependencies
+    # Instalar dependencias del servidor
     cd server
     npm install
 
-    # Install client dependencies
+    # Instalar dependencias del cliente
     cd ../client
     npm install
     ```
 
-### Running the App
+### Ejecutando la App
 
-You need to run both the backend and frontend terminals simultaneously.
+Necesitas ejecutar las terminales del backend y frontend simultáneamente.
 
-1.  **Start the Backend Server**
+1.  **Iniciar el Servidor Backend**
 
     ```bash
     cd server
     node index.js
     ```
 
-    _Server runs on port 3000._
+    _El servidor corre en el puerto 3000._
 
-2.  **Start the Frontend**
+2.  **Iniciar el Frontend**
 
     ```bash
     cd client
     npm run dev
     ```
 
-    _Client runs on port 5173._
+    _El cliente corre en el puerto 5173._
 
-3.  **Access the App**
-    Open `http://localhost:5173` in your browser.
+3.  **Acceder a la App**
+    Abre `http://localhost:5173` en tu navegador.
 
-## 🎨 Design System
+## 🎨 Sistema de Diseño
 
-The application uses a custom **"Echo Oracle"** inspired design system:
+La aplicación utiliza un sistema de diseño personalizado inspirado en **"Echo Oracle"**:
 
-- **Backgrounds**: Deep matte black (`#0e0e0e`, `#1a1a1a`).
-- **Accent**: Neon Lime (`#ccff00`).
-- **Typography**: Inter (Bold/Black weights, Uppercase).
-- **Components**: Solid matte cards, sharp edges, and high-contrast controls.
+- **Fondos**: Negro mate profundo (`#0e0e0e`, `#1a1a1a`).
+- **Acento**: Verde Lima Neón (`#ccff00`).
+- **Tipografía**: Inter (Pesos Bold/Black, Mayúsculas).
+- **Componentes**: Tarjetas sólidas mate, bordes afilados y controles de alto contraste.
