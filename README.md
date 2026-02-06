@@ -1,45 +1,84 @@
-# TikTok Downloader (No Watermark)
+# TikTokSaver - TikTok Downloader
 
-A modern, fast web application to download TikTok videos without watermarks and extract audio.
+A high-performance, minimalist web application to download TikTok videos without watermarks and extract audio (MP3).
 
-## Getting Started
+## ⚡ Features
+
+- **No Watermark**: Downloads clean, high-quality videos directly from TikTok.
+- **Audio Extraction**: One-click MP3 download support.
+- **Cyber-Brutalist UI**: A reimagined interface featuring a minimal dark aesthetic with neon lime accents (`#ccff00`).
+- **Privacy Focused**: Includes a server-side image proxy to bypass hotlinking restrictions and protect user privacy.
+- **Responsive**: Fully optimized for desktop and mobile devices.
+
+## 🛠️ Tech Stack
+
+**Frontend:**
+
+- **React 18** (via Vite)
+- **Tailwind CSS** (v4 compatible)
+- **Framer Motion** (Animations)
+- **Lucide React** (Icons)
+
+**Backend:**
+
+- **Node.js** & **Express**
+- **@tobyg74/tiktok-api-dl** (Scraping/API)
+
+## 🚀 Getting Started
 
 ### Prerequisites
 
-- Node.js installed.
+- Node.js (v18+ recommended)
+- npm (or bun/yarn)
 
-### Setup
+### Installation
 
-1.  **Install Dependencies** (If not already done):
-    Note: The initial setup might still be running in the background. If you see folders `node_modules` in both `client` and `server`, you are simpler ready.
+1.  **Clone the repository**
+
+2.  **Install Application Dependencies**
+
+    This project is a monorepo structure with `client` and `server` folders.
 
     ```bash
+    # Install server dependencies
     cd server
     npm install
+
+    # Install client dependencies
     cd ../client
     npm install
     ```
 
-2.  **Start the Backend Server**:
-    Open a terminal in the `server` folder:
+### Running the App
+
+You need to run both the backend and frontend terminals simultaneously.
+
+1.  **Start the Backend Server**
 
     ```bash
     cd server
     node index.js
     ```
 
-    The server will run on `http://localhost:3000`.
+    _Server runs on port 3000._
 
-3.  **Start the Frontend Client**:
-    Open a _new_ terminal in the `client` folder:
+2.  **Start the Frontend**
+
     ```bash
     cd client
     npm run dev
     ```
-    Open the link shown (usually `http://localhost:5173`) in your browser.
 
-## Features
+    _Client runs on port 5173._
 
-- **No Watermark**: Downloads the clean video.
-- **Audio Extraction**: Option to download just the MP3.
-- **Modern UI**: Glassmorphism design with smooth animations.
+3.  **Access the App**
+    Open `http://localhost:5173` in your browser.
+
+## 🎨 Design System
+
+The application uses a custom **"Echo Oracle"** inspired design system:
+
+- **Backgrounds**: Deep matte black (`#0e0e0e`, `#1a1a1a`).
+- **Accent**: Neon Lime (`#ccff00`).
+- **Typography**: Inter (Bold/Black weights, Uppercase).
+- **Components**: Solid matte cards, sharp edges, and high-contrast controls.
