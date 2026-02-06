@@ -30,8 +30,8 @@ Una aplicación web minimalista de alto rendimiento para descargar videos de Tik
 
 ### Prerrequisitos
 
-- Node.js (v18+ recomendado)
-- npm (o bun/yarn)
+- **Bun** (v1.0+ recomendado)
+- Node.js (Opcional, entorno compatible)
 
 ### Instalación
 
@@ -44,11 +44,11 @@ Una aplicación web minimalista de alto rendimiento para descargar videos de Tik
     ```bash
     # Instalar dependencias del servidor
     cd server
-    npm install
+    bun install
 
     # Instalar dependencias del cliente
     cd ../client
-    npm install
+    bun install
     ```
 
 ### Ejecutando la App
@@ -59,7 +59,7 @@ Necesitas ejecutar las terminales del backend y frontend simultáneamente.
 
     ```bash
     cd server
-    node index.js
+    bun start
     ```
 
     _El servidor corre en el puerto 3000._
@@ -68,7 +68,7 @@ Necesitas ejecutar las terminales del backend y frontend simultáneamente.
 
     ```bash
     cd client
-    npm run dev
+    bun dev
     ```
 
     _El cliente corre en el puerto 5173._
