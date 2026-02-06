@@ -27,8 +27,13 @@ app.get('/api/proxy-image', async (req, res) => {
   const { url } = req.query;
   if (!url) return res.status(400).send('URL required');
 
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s timeout
+
   try {
-    const response = await fetch(url);
+    const response = await fetch(url, { signal: controller.signal });
+    clearTimeout(timeoutId);
+    
     if (!response.ok) throw new Error(`Failed to fetch image: ${response.statusText}`);
     
     const buffer = await response.arrayBuffer();
@@ -40,8 +45,14 @@ app.get('/api/proxy-image', async (req, res) => {
     res.set(headers);
     res.send(Buffer.from(buffer));
   } catch (error) {
+    if (error.name === 'AbortError') {
+       console.error('Proxy image timeout:', url);
+       return res.status(504).send('Request Timeout');
+    }
     console.error('Proxy image error:', error);
     res.status(500).send('Error fetching image');
+  } finally {
+    clearTimeout(timeoutId);
   }
 });
 
