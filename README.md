@@ -2,6 +2,8 @@
 
 A high-performance, minimalist web application to download TikTok videos without watermarks and extract audio (MP3).
 
+<img width="1349" height="641" alt="image" src="https://github.com/user-attachments/assets/fcda2dee-57a4-4cbf-8b5f-7fa0e562fa5b" />
+
 ## ⚡ Features
 
 - **No Watermark**: Downloads clean, high-quality videos directly from TikTok.
