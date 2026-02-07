@@ -74,23 +74,33 @@ app.get('/api/download', async (req, res) => {
       
       const downloads = [];
       
-      // HD Video
-      if (data.hdplay && !data.hdplay.includes('error')) {
-          downloads.push({
-              type: 'hd',
-              label: 'Sin Marca (HD)',
-              url: data.hdplay,
-              size: data.hd_size
-          });
-      }
-      
-      // Standard Video (Clean)
+      // 1. Standard Clean Video (H.264 Compatible)
+      // We prioritize 'play' over 'hdplay' here because 'hdplay' often uses HEVC codec which fails on Windows Media Player (`0xc00d5212`).
       if (data.play) {
           downloads.push({
               type: 'normal',
               label: 'Sin Marca',
               url: data.play,
               size: data.size
+          });
+      } else if (data.hdplay && !data.hdplay.includes('error')) {
+          // Fallback to HD if standard is missing
+          downloads.push({
+              type: 'normal',
+              label: 'Sin Marca',
+              url: data.hdplay,
+              size: data.hd_size
+          });
+      }
+
+
+      // Watermarked Video (Original/HD)
+      if (data.wmplay) {
+          downloads.push({
+              type: 'watermark',
+              label: 'Con Marca (HD)',
+              url: data.wmplay,
+              size: data.wm_size || data.size // Fallback size
           });
       }
 
@@ -148,6 +158,9 @@ app.get('/api/proxy-download', async (req, res) => {
   const { url, filename } = req.query;
   if (!url) return res.status(400).send('URL required');
 
+  // Sanitize filename to prevent header errors with special characters/emojis
+  const safeFilename = (filename || 'tiktok_video.mp4').replace(/[^a-zA-Z0-9._-]/g, '_');
+
   console.log(`[Proxy] Downloading: ${url}`);
 
   try {
@@ -178,15 +191,15 @@ app.get('/api/proxy-download', async (req, res) => {
         throw new Error('Target is not a video file');
     }
 
-    res.setHeader('Content-Disposition', `attachment; filename="${filename || 'tiktok_video.mp4'}"`);
-    res.setHeader('Content-Type', 'video/mp4');
-    
-    if (response.headers.get('content-length')) {
-        res.setHeader('Content-Length', response.headers.get('content-length'));
-    }
+    // We buffer the file to ensure we have it all and can set correct Content-Length
+    const arrayBuffer = await response.arrayBuffer();
+    const videoBuffer = Buffer.from(arrayBuffer);
 
-    const buffer = await response.arrayBuffer();
-    res.end(Buffer.from(buffer));
+    res.setHeader('Content-Disposition', `attachment; filename="${safeFilename}"`);
+    res.setHeader('Content-Type', 'video/mp4');
+    res.setHeader('Content-Length', videoBuffer.length);
+
+    res.end(videoBuffer);
     
   } catch (error) {
     console.error('Proxy download error:', error);

@@ -5,7 +5,7 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 
 interface DownloadOption {
-  type: 'hd' | 'normal' | 'music';
+  type: 'hd' | 'normal' | 'music' | 'watermark';
   label: string;
   url: string;
   size?: number | string;
@@ -158,11 +158,11 @@ function Home() {
 
               <div className="flex flex-col gap-6">
                 {/* Simplified Preview */}
-                <div className="w-full aspect-square md:aspect-video bg-black rounded overflow-hidden relative border border-[#333] group">
+                <div className="w-full h-64 md:h-96 bg-black rounded-lg overflow-hidden relative border border-[#333] group flex items-center justify-center">
                   {data.result.cover ? (
                     <img 
                       src={`/api/proxy-image?url=${encodeURIComponent(data.result.cover)}`} 
-                      className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"
+                      className="w-full h-full object-contain opacity-90 group-hover:opacity-100 transition-opacity"
                       alt="Cover"
                     />
                   ) : (
@@ -192,6 +192,7 @@ function Home() {
                       className={`
                         w-full py-4 rounded font-bold uppercase text-sm flex items-center justify-center gap-3 transition-all
                         ${option.type === 'hd' ? 'bg-[#ccff00] text-black hover:bg-[#b3ff00]' : 
+                          option.type === 'watermark' ? 'bg-transparent text-[#ccff00] border border-[#ccff00] hover:bg-[#ccff00] hover:text-black' :
                           option.type === 'music' ? 'bg-[#ff8800] text-white hover:bg-[#ff6600]' : 
                           'bg-[#2a2a2a] text-white hover:bg-[#3a3a3a] border border-[#444]'}
                       `}
