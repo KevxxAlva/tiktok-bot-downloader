@@ -4,8 +4,16 @@ import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 
+interface DownloadOption {
+  type: 'hd' | 'normal' | 'music';
+  label: string;
+  url: string;
+  size?: number | string;
+}
+
 interface DownloadResult {
   result: {
+    downloads: DownloadOption[];
     video: string[];
     music: string;
     cover: string;
@@ -168,25 +176,33 @@ function Home() {
                   </div>
                 </div>
 
-                {/* Action Buttons */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <button 
-                    onClick={() => window.open(data.result.video[0], '_blank')}
-                    className="btn-lime py-3 rounded flex items-center justify-center gap-2 text-sm"
-                  >
-                    <Download className="w-4 h-4" />
-                    DESCARGAR VIDEO
-                  </button>
-                  
-                  {data.result.music && (
+                {/* Dynamic Download Buttons */}
+                <div className="grid grid-cols-1 gap-3">
+                  {data.result.downloads.map((option, idx) => (
                     <button 
-                      onClick={() => window.open(data.result.music, '_blank')}
-                      className="btn-secondary py-3 rounded flex items-center justify-center gap-2 text-sm uppercase"
+                      key={idx}
+                      onClick={() => {
+                          if (option.type === 'music') {
+                              window.open(option.url, '_blank');
+                          } else {
+                              const filename = `tiktok_${data.result.author.nickname}_${option.type}.mp4`;
+                              window.location.href = `/api/proxy-download?url=${encodeURIComponent(option.url)}&filename=${filename}`;
+                          }
+                      }}
+                      className={`
+                        w-full py-4 rounded font-bold uppercase text-sm flex items-center justify-center gap-3 transition-all
+                        ${option.type === 'hd' ? 'bg-[#ccff00] text-black hover:bg-[#b3ff00]' : 
+                          option.type === 'music' ? 'bg-[#ff8800] text-white hover:bg-[#ff6600]' : 
+                          'bg-[#2a2a2a] text-white hover:bg-[#3a3a3a] border border-[#444]'}
+                      `}
                     >
-                      <Music className="w-4 h-4" />
-                      DESCARGAR MP3
+                      {option.type === 'music' ? <Music className="w-5 h-5" /> : <Download className="w-5 h-5" />}
+                      <span>
+                        {option.label}
+                        {option.size ? <span className="opacity-60 ml-2 text-xs">({typeof option.size === 'number' ? (option.size / 1024 / 1024).toFixed(1) + ' MB' : option.size})</span> : ''}
+                      </span>
                     </button>
-                  )}
+                  ))}
                 </div>
               </div>
 

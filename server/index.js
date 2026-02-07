@@ -1,6 +1,5 @@
 const express = require('express');
 const cors = require('cors');
-const { Downloader } = require('@tobyg74/tiktok-api-dl');
 const dotenv = require('dotenv');
 
 dotenv.config();
@@ -11,24 +10,19 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-// Request logger middleware
+// Request logger
 app.use((req, res, next) => {
   console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
   next();
 });
 
-// Health check endpoint
-app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
-});
-
-// Image Proxy to bypass referrer protection
+// Image Proxy
 app.get('/api/proxy-image', async (req, res) => {
   const { url } = req.query;
   if (!url) return res.status(400).send('URL required');
 
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s timeout
+  const timeoutId = setTimeout(() => controller.abort(), 10000);
 
   try {
     const response = await fetch(url, { signal: controller.signal });
@@ -39,126 +33,167 @@ app.get('/api/proxy-image', async (req, res) => {
     const buffer = await response.arrayBuffer();
     const headers = {
       'Content-Type': response.headers.get('content-type') || 'image/jpeg',
-      'Cache-Control': 'public, max-age=31536000', // Cache for 1 year
+      'Cache-Control': 'public, max-age=31536000',
     };
     
     res.set(headers);
     res.send(Buffer.from(buffer));
   } catch (error) {
-    if (error.name === 'AbortError') {
-       console.error('Proxy image timeout:', url);
-       return res.status(504).send('Request Timeout');
-    }
+    if (error.name === 'AbortError') return res.status(504).send('Timeout');
     console.error('Proxy image error:', error);
-    res.status(500).send('Error fetching image');
+    res.status(500).send('Error');
   } finally {
     clearTimeout(timeoutId);
   }
 });
 
+// Main Download Endpoint using TikWM API
 app.get('/api/download', async (req, res) => {
   const { url } = req.query;
 
   if (!url) {
-    return res.status(400).json({ 
-      status: 'error',
-      error: 'URL is required' 
-    });
+    return res.status(400).json({ status: 'error', error: 'URL is required' });
   }
 
-  // Validate TikTok URL
-  const tiktokRegex = /^https?:\/\/(www\.|vm\.|vt\.)?tiktok\.com\/.+/i;
-  // Basic validation, let the library handle complex cases
-  if (!url.includes('tiktok.com')) {
-     return res.status(400).json({
-      status: 'error',
-      error: 'Please provide a valid TikTok URL'
-    });
-  }
-
-  console.log(`[${new Date().toISOString()}] Fetching: ${url}`);
+  console.log(`[${new Date().toISOString()}] Fetching via TikWM: ${url}`);
 
   try {
-    // Attempt with version "v1"
-    let result = await Downloader(url, { version: "v1" });
-    
-    // If v1 fails/returns empty, try "v2"
-    if (!result || result.status !== 'success') {
-      console.log('v1 failed or empty, trying v2...');
-      result = await Downloader(url, { version: "v2" });
-    }
+    const formData = new FormData();
+    formData.append('url', url);
+    formData.append('hd', '1');
 
-    console.log('Result status:', result?.status);
+    const tikResponse = await fetch('https://www.tikwm.com/api/', {
+      method: 'POST',
+      body: formData,
+    });
 
-    if (result && result.status === 'success' && result.result) {
-      // Transform result to match frontend expectations
-      // Frontend expects: result.video as string[]
-      // Library returns: result.video as { noWatermark: string, watermark: string, ... } or string[] depending on version
+    const tikData = await tikResponse.json();
+
+    if (tikData.code === 0 && tikData.data) {
+      const data = tikData.data;
       
-      const originalResult = result.result;
-      let finalVideo = [];
-
-      if (Array.isArray(originalResult.video)) {
-        finalVideo = originalResult.video;
-      } else if (typeof originalResult.video === 'object' && originalResult.video !== null) {
-        // Extract URLs from object
-        if (originalResult.video.noWatermark) finalVideo.push(originalResult.video.noWatermark);
-        if (originalResult.video.watermark) finalVideo.push(originalResult.video.watermark);
-        // Fallback or other properties
-        if (finalVideo.length === 0 && originalResult.video.downloadAddr) finalVideo.push(originalResult.video.downloadAddr);
-      } else if (typeof originalResult.video === 'string') {
-        finalVideo.push(originalResult.video);
+      const downloads = [];
+      
+      // HD Video
+      if (data.hdplay && !data.hdplay.includes('error')) {
+          downloads.push({
+              type: 'hd',
+              label: 'Sin Marca (HD)',
+              url: data.hdplay,
+              size: data.hd_size
+          });
+      }
+      
+      // Standard Video (Clean)
+      if (data.play) {
+          downloads.push({
+              type: 'normal',
+              label: 'Sin Marca',
+              url: data.play,
+              size: data.size
+          });
       }
 
-      // Ensure we have at least one video URL
-      if (finalVideo.length === 0) {
-         console.error('No video URLs found in result:', originalResult);
-         throw new Error('No video URLs found');
+      // Music
+      if (data.music) {
+          downloads.push({
+              type: 'music',
+              label: 'Audio MP3',
+              url: data.music,
+              size: null
+          });
+      }
+      
+      if (downloads.length === 0) {
+          return res.status(404).json({ 
+              status: 'error', 
+              error: 'Could not find a watermark-free version. The video might be private or region-locked.' 
+          });
       }
 
-      // Construct safe response
       const cleanResult = {
         status: 'success',
         result: {
-            ...originalResult,
-            video: finalVideo, // Ensure it's an array
-            music: originalResult.music?.playUrl?.[0] || originalResult.music?.play_url?.uri || originalResult.music, // Normalize music URL if needed
-            cover: Array.isArray(originalResult.cover) ? originalResult.cover[0] : 
-                   (originalResult.cover || 
-                    originalResult.coverLarge?.[0] || 
-                    originalResult.coverMedium?.[0] || 
-                    originalResult.coverThumb?.[0] ||
-                    originalResult.video?.cover ||
-                    originalResult.ai_dynamic_cover ||
-                    originalResult.origin_cover),
-            desc: originalResult.description || originalResult.desc,
+            downloads: downloads, // New structured list
+            video: [downloads[0].url], // Keep for legacy/fallback
+            music: data.music,
+            cover: data.cover,
+            desc: data.title,
             author: {
-                nickname: originalResult.author?.nickname || originalResult.author?.unique_id,
-                avatar: originalResult.author?.avatarLarger || originalResult.author?.avatarThumb || originalResult.author?.avatar
+                nickname: data.author.nickname,
+                avatar: data.author.avatar
             }
         }
       };
 
-      res.json(cleanResult);
+      console.log('Sending structured downloads:', downloads.map(d => d.type));
+      return res.json(cleanResult);
     } else {
-      res.status(500).json({ 
-        status: 'error',
-        error: 'Could not retrieve video data. The video might be private or deleted.',
-        details: result?.message || 'Unknown error'
-      });
+       console.error('TikWM Error:', tikData);
+       return res.status(500).json({ 
+           status: 'error', 
+           error: 'Could not fetch video info from provider.',
+           details: tikData.msg 
+       });
     }
 
   } catch (error) {
-    console.error('Error downloading:', error.message);
-    res.status(500).json({ 
-      status: 'error',
-      error: 'Failed to process the video. Please try again.',
-      message: error.message 
+    console.error('Error downloading:', error);
+    res.status(500).json({ status: 'error', error: 'Internal Server Error' });
+  }
+});
+
+// Video Proxy Streamer
+app.get('/api/proxy-download', async (req, res) => {
+  const { url, filename } = req.query;
+  if (!url) return res.status(400).send('URL required');
+
+  console.log(`[Proxy] Downloading: ${url}`);
+
+  try {
+    // Retry logic with different headers
+    let response = await fetch(url, {
+        headers: {
+            'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36',
+            'Referer': 'https://www.tiktok.com/',
+            'Range': 'bytes=0-',
+        }
     });
+
+    if (response.status === 403) {
+        console.log('[Proxy] 403 detected, retrying without Referer...');
+        response = await fetch(url, {
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36',
+            }
+        });
+    }
+
+    if (!response.ok) throw new Error(`Failed to fetch video: ${response.statusText}`);
+
+    const contentType = response.headers.get('content-type');
+    console.log(`[Proxy] Content-Type: ${contentType}`);
+
+    if (contentType && !contentType.includes('video') && !contentType.includes('octet-stream')) {
+        throw new Error('Target is not a video file');
+    }
+
+    res.setHeader('Content-Disposition', `attachment; filename="${filename || 'tiktok_video.mp4'}"`);
+    res.setHeader('Content-Type', 'video/mp4');
+    
+    if (response.headers.get('content-length')) {
+        res.setHeader('Content-Length', response.headers.get('content-length'));
+    }
+
+    const buffer = await response.arrayBuffer();
+    res.end(Buffer.from(buffer));
+    
+  } catch (error) {
+    console.error('Proxy download error:', error);
+    if (!res.headersSent) res.status(500).send('Error downloading video');
   }
 });
 
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
-  console.log(`📡 API endpoint: http://localhost:${PORT}/api/download?url=<tiktok_url>`);
 });
