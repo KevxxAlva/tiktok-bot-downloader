@@ -201,6 +201,57 @@ function Home() {
           )}
         </AnimatePresence>
 
+        {/* How to Use Section */}
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.4 }}
+          className="mt-24 space-y-12 border-t border-[#1a1a1a] pt-12"
+        >
+          {/* Guide Steps */}
+          <div className="space-y-8">
+            <h2 className="text-[#ccff00] text-xl font-black uppercase tracking-widest text-center mb-8">
+              Guía de Uso
+            </h2>
+            
+            <div className="grid gap-6">
+              {[
+                { step: "01", title: "Copia el Enlace", desc: "Ve a TikTok, busca tu video favorito y copia el enlace desde el botón 'Compartir'." },
+                { step: "02", title: "Pégalo Arriba", desc: "Pega el enlace en el campo de texto de esta página." },
+                { step: "03", title: "Descarga MP4", desc: "Haz clic en 'Revelar Contenido' y luego en 'Descargar MP4' para guardarlo sin marca de agua." }
+              ].map((item) => (
+                <div key={item.step} className="flex gap-6 items-start group">
+                  <span className="text-4xl font-black text-[#1a1a1a] group-hover:text-[#2a2a2a] transition-colors select-none">
+                    {item.step}
+                  </span>
+                  <div>
+                    <h3 className="text-white font-bold uppercase tracking-wider mb-1">{item.title}</h3>
+                    <p className="text-gray-500 text-sm leading-relaxed">{item.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Examples */}
+          <div className="bg-[#111] p-6 rounded-lg border border-[#222]">
+            <h3 className="text-white text-xs font-bold uppercase tracking-widest mb-4 flex items-center gap-2">
+              <span className="w-1 h-4 bg-[#ccff00]"/>
+              Enlaces Soportados
+            </h3>
+            <div className="space-y-2 text-xs font-mono text-gray-500 overflow-hidden">
+              <p className="hover:text-gray-300 transition-colors">https://vm.tiktok.com/ZMe7...</p>
+              <p className="hover:text-gray-300 transition-colors">https://www.tiktok.com/@usuario/video/123456789...</p>
+              <p className="hover:text-gray-300 transition-colors">https://m.tiktok.com/v/123456789.html</p>
+            </div>
+          </div>
+
+          {/* Note */}
+          <p className="text-center text-[10px] text-gray-600 uppercase tracking-widest max-w-xs mx-auto">
+            Nota: Si el enlace acaba de ser generado, puede tardar unos segundos en estar disponible para descarga.
+          </p>
+
+        </motion.div>
       </div>
 
       <footer className="mt-auto pt-20 pb-6 text-center w-full max-w-xl mx-auto border-t border-[#1a1a1a]">
