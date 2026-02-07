@@ -54,7 +54,24 @@ function Home() {
   };
 
   return (
-    <div className="min-h-screen w-full flex flex-col items-center py-20 px-4">
+    <div className="min-h-screen w-full flex flex-col items-center py-10 px-4 relative">
+      
+      {/* Header */}
+      <nav className="w-full max-w-5xl flex justify-between items-center mb-20">
+        <div className="flex items-center gap-3">
+          <div className="bg-[#ccff00] p-1.5 rounded-sm">
+            <Waves className="w-5 h-5 text-black" strokeWidth={3} />
+          </div>
+          <span className="font-black tracking-tight text-xl text-white">TIKTOKSAVER</span>
+        </div>
+        
+        <div className="flex items-center gap-6 text-sm font-bold uppercase tracking-wider text-gray-500">
+          <a href="#Guia" className="hover:text-[#ccff00] transition-colors hidden md:block">Cómo funciona</a>
+          <a href="https://github.com/KevxxAlva/tiktok-bot-downloader" target="_blank" rel="noreferrer" className="text-white hover:text-[#ccff00] transition-colors">
+             <Github className="w-6 h-6" />
+          </a>
+        </div>
+      </nav>
       
       {/* Brand / Logo */}
       <motion.div 
@@ -226,7 +243,7 @@ function Home() {
           className="mt-24 space-y-12 border-t border-[#1a1a1a] pt-12"
         >
           {/* Guide Steps */}
-          <div className="space-y-8">
+          <div id="Guia" className="space-y-8">
             <h2 className="text-[#ccff00] text-xl font-black uppercase tracking-widest text-center mb-8">
               Guía de Uso
             </h2>
