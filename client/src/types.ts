@@ -9,6 +9,7 @@ export interface DownloadOption {
     result: {
       downloads: DownloadOption[];
       video: string[];
+      images?: string[];
       music: string;
       cover: string;
       desc: string;

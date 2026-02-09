@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { Download, Music, Activity } from 'lucide-react';
+import { Download, Music, Activity, Grid as GridIcon } from 'lucide-react';
 import type { DownloadResult } from '../types';
 
 interface VideoResultProps {
@@ -7,6 +7,15 @@ interface VideoResultProps {
 }
 
 const VideoResult = ({ data }: VideoResultProps) => {
+  const hasImages = data?.result.images && data.result.images.length > 0;
+
+  const downloadImage = (url: string, index: number) => {
+    if (!data) return;
+    const cleanNickname = data.result.author.nickname.replace(/[^a-zA-Z0-9]/g, '_');
+    const filename = `tiktok_${cleanNickname}_image_${index + 1}.jpeg`;
+    window.location.href = `/api/proxy-download?url=${encodeURIComponent(url)}&filename=${filename}`;
+  };
+
   return (
     <AnimatePresence>
       {data && (
@@ -20,27 +29,58 @@ const VideoResult = ({ data }: VideoResultProps) => {
           <div className="text-center mb-8">
             <p className="text-gray-500 uppercase text-xs font-bold tracking-[0.2em] mb-2">Objetivo Localizado</p>
             <h3 className="text-white text-xl font-bold line-clamp-1">{data.result.author?.nickname}</h3>
+            {hasImages && (
+              <div className="flex justify-center items-center gap-2 mt-2 text-[#ccff00] text-xs font-bold uppercase tracking-wider">
+                <GridIcon className="w-4 h-4" />
+                <span>{data.result.images!.length} Imágenes Detectadas</span>
+              </div>
+            )}
           </div>
 
           <div className="flex flex-col gap-6">
-            {/* Simplified Preview */}
-            <div className="w-full h-64 md:h-96 bg-black rounded-lg overflow-hidden relative border border-[#333] group flex items-center justify-center">
-              {data.result.cover ? (
-                <img
-                  src={`/api/proxy-image?url=${encodeURIComponent(data.result.cover)}`}
-                  className="w-full h-full object-contain opacity-90 group-hover:opacity-100 transition-opacity"
-                  alt="Cover"
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center text-gray-700">
-                  <Activity />
-                </div>
-              )}
-              {/* Overlay text */}
-              <div className="absolute bottom-0 left-0 w-full p-4 bg-linear-to-t from-black to-transparent">
-                <p className="text-white text-xs line-clamp-1 opacity-70 font-mono">{data.result.desc}</p>
+            
+            {hasImages ? (
+              /* Image Grid */
+              <div className="grid grid-cols-2 gap-3 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
+                {data.result.images!.map((img, idx) => (
+                  <div key={idx} className="relative group rounded-lg overflow-hidden border border-[#333] aspect-4/5">
+                    <img
+                      src={`/api/proxy-image?url=${encodeURIComponent(img)}`}
+                      className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity"
+                      alt={`Slide ${idx + 1}`}
+                    />
+                    <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors" />
+                    
+                    <button
+                      onClick={() => downloadImage(img, idx)}
+                      className="absolute bottom-2 right-2 w-8 h-8 bg-[#ccff00] text-black rounded-full flex items-center justify-center translate-y-10 group-hover:translate-y-0 transition-transform shadow-lg hover:bg-white"
+                      title="Descargar imagen"
+                    >
+                      <Download className="w-4 h-4" />
+                    </button>
+                  </div>
+                ))}
               </div>
-            </div>
+            ) : (
+              /* Video Preview */
+              <div className="w-full h-64 md:h-96 bg-black rounded-lg overflow-hidden relative border border-[#333] group flex items-center justify-center">
+                {data.result.cover ? (
+                  <img
+                    src={`/api/proxy-image?url=${encodeURIComponent(data.result.cover)}`}
+                    className="w-full h-full object-contain opacity-90 group-hover:opacity-100 transition-opacity"
+                    alt="Cover"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-gray-700">
+                    <Activity />
+                  </div>
+                )}
+                {/* Overlay text */}
+                <div className="absolute bottom-0 left-0 w-full p-4 bg-linear-to-t from-black to-transparent">
+                  <p className="text-white text-xs line-clamp-1 opacity-70 font-mono">{data.result.desc}</p>
+                </div>
+              </div>
+            )}
 
             {/* Dynamic Download Buttons */}
             <div className="grid grid-cols-1 gap-3">

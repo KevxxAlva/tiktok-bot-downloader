@@ -74,34 +74,36 @@ app.get('/api/download', async (req, res) => {
       
       const downloads = [];
       
-      // 1. Standard Clean Video (H.264 Compatible)
-      // We prioritize 'play' over 'hdplay' here because 'hdplay' often uses HEVC codec which fails on Windows Media Player (`0xc00d5212`).
-      if (data.play) {
-          downloads.push({
-              type: 'normal',
-              label: 'Sin Marca',
-              url: data.play,
-              size: data.size
-          });
-      } else if (data.hdplay && !data.hdplay.includes('error')) {
-          // Fallback to HD if standard is missing
-          downloads.push({
-              type: 'normal',
-              label: 'Sin Marca',
-              url: data.hdplay,
-              size: data.hd_size
-          });
-      }
+      // 1. Standard Clean Video (H.264 Compatible) - ONLY if not a slideshow
+      // We prioritize 'play' over 'hdplay' because 'hdplay' often uses HEVC codec which fails on Windows Media Player.
+      // If it's a slideshow (images), we skip video downloads because TikWM often returns a broken/black video render.
+      if (!data.images || data.images.length === 0) {
+          if (data.play) {
+              downloads.push({
+                  type: 'normal',
+                  label: 'Sin Marca',
+                  url: data.play,
+                  size: data.size
+              });
+          } else if (data.hdplay && !data.hdplay.includes('error')) {
+              // Fallback to HD if standard is missing
+              downloads.push({
+                  type: 'normal',
+                  label: 'Sin Marca',
+                  url: data.hdplay,
+                  size: data.hd_size
+              });
+          }
 
-
-      // Watermarked Video (Original/HD)
-      if (data.wmplay) {
-          downloads.push({
-              type: 'watermark',
-              label: 'Con Marca (HD)',
-              url: data.wmplay,
-              size: data.wm_size || data.size // Fallback size
-          });
+          // Watermarked Video (Original/HD)
+          if (data.wmplay) {
+              downloads.push({
+                  type: 'watermark',
+                  label: 'Con Marca (HD)',
+                  url: data.wmplay,
+                  size: data.wm_size || data.size // Fallback size
+              });
+          }
       }
 
       // Music
@@ -114,7 +116,12 @@ app.get('/api/download', async (req, res) => {
           });
       }
       
-      if (downloads.length === 0) {
+      // Images (Slideshow)
+      if (data.images && Array.isArray(data.images)) {
+          console.log(`[TikWM] Found ${data.images.length} images`);
+      }
+
+      if (downloads.length === 0 && (!data.images || data.images.length === 0)) {
           return res.status(404).json({ 
               status: 'error', 
               error: 'Could not find a watermark-free version. The video might be private or region-locked.' 
@@ -124,8 +131,9 @@ app.get('/api/download', async (req, res) => {
       const cleanResult = {
         status: 'success',
         result: {
-            downloads: downloads, // New structured list
-            video: [downloads[0].url], // Keep for legacy/fallback
+            downloads: downloads, 
+            video: downloads.length > 0 ? [downloads[0].url] : [],
+            images: data.images || [], // New field for images
             music: data.music,
             cover: data.cover,
             desc: data.title,
@@ -195,7 +203,17 @@ app.get('/api/proxy-download', async (req, res) => {
     const arrayBuffer = await response.arrayBuffer();
     const mediaBuffer = Buffer.from(arrayBuffer);
 
-    res.setHeader('Content-Disposition', `attachment; filename="${safeFilename}"`);
+    // Smart filename correction based on Content-Type
+    let finalFilename = safeFilename;
+    if (contentType) {
+        if (contentType.includes('audio') && finalFilename.endsWith('.mp4')) {
+            finalFilename = finalFilename.replace('.mp4', '.mp3');
+        } else if (contentType.includes('image') && finalFilename.endsWith('.mp4')) {
+             finalFilename = finalFilename.replace('.mp4', '.jpeg');
+        }
+    }
+
+    res.setHeader('Content-Disposition', `attachment; filename="${finalFilename}"`);
     res.setHeader('Content-Type', contentType || 'application/octet-stream');
     res.setHeader('Content-Length', mediaBuffer.length);
 
@@ -203,7 +221,7 @@ app.get('/api/proxy-download', async (req, res) => {
     
   } catch (error) {
     console.error('Proxy download error:', error);
-    if (!res.headersSent) res.status(500).send('Error downloading video');
+    if (!res.headersSent) res.status(500).send(`Error downloading file: ${error.message}`);
   }
 });
 
