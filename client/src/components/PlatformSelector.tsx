@@ -67,8 +67,7 @@ const PlatformSelector = ({ selected, onSelect }: PlatformSelectorProps) => {
               `}
               style={{
                 background: platform.gradient || platform.color,
-                color: platform.textColor,
-                ringColor: platform.color
+                color: platform.textColor
               }}
             >
               {isSelected && (

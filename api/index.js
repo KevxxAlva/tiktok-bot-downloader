@@ -181,89 +181,71 @@ async function downloadTikTok(url) {
   }
 }
 
+const { instagramGetUrl } = require("instagram-url-direct");
+
 // Instagram Download Function
 async function downloadInstagram(url) {
   console.log(`[Instagram] Fetching: ${url}`);
 
   try {
-    // Using TikWM API which also supports Instagram
-    const formData = new FormData();
-    formData.append('url', url);
-    formData.append('hd', '1');
+    const data = await instagramGetUrl(url);
+    
+    if (!data.url_list || data.url_list.length === 0) {
+      throw new Error('No media found in this Instagram post.');
+    }
 
-    const response = await fetch('https://www.tikwm.com/api/', {
-      method: 'POST',
-      body: formData,
+    const downloads = [];
+    const images = [];
+    const videos = [];
+
+    // Process all media (images & videos)
+    data.url_list.forEach((mediaUrl) => {
+      // Instagram URLs usually contain query params, we clean them if needed
+      // but keep them intact for download validity.
+      // Detecting type is tricky sometimes, so we default to download option.
+
+      // Guess type from URL or just offer generic download
+      // Usually, images end in .jpg/.webp, videos in .mp4
+      
+      // Let's create a generic "Media" option
+      downloads.push({
+          type: 'normal', // Treat everything as normal download
+          label: 'Descargar Medio',
+          url: mediaUrl,
+          size: null
+      });
+
+      // Also categorize for preview
+      // (This is a simplified check, ideally we'd check headers)
+      if (mediaUrl.includes('.mp4')) {
+          videos.push(mediaUrl);
+      } else {
+          images.push(mediaUrl);
+      }
     });
 
-    const responseData = await response.json();
-
-    if (responseData.code === 0 && responseData.data) {
-      const data = responseData.data;
-      
-      const downloads = [];
-
-      // Instagram video
-      if (data.play) {
-        downloads.push({
-          type: 'normal',
-          label: 'Video HD',
-          url: data.play,
-          size: data.size
-        });
-      } else if (data.hdplay && !data.hdplay.includes('error')) {
-        downloads.push({
-          type: 'normal',
-          label: 'Video HD',
-          url: data.hdplay,
-          size: data.hd_size
-        });
-      }
-
-      // Instagram images (carousel posts)
-      if (data.images && Array.isArray(data.images)) {
-        console.log(`[Instagram] Found ${data.images.length} images`);
-      }
-
-      // Music/Audio
-      if (data.music) {
-        downloads.push({
-          type: 'music',
-          label: 'Audio MP3',
-          url: data.music
-        });
-      }
-
-      if (downloads.length === 0 && (!data.images || data.images.length === 0)) {
-        throw new Error('Could not extract media from this Instagram post.');
-      }
-
-      const cleanResult = {
-        status: 'success',
-        result: {
-          downloads: downloads,
-          video: downloads.length > 0 && downloads[0].type !== 'music' ? [downloads[0].url] : [],
-          images: data.images || [],
-          music: data.music,
-          cover: data.cover,
-          desc: data.title || '',
-          author: {
-            nickname: data.author?.nickname || 'Instagram User',
-            avatar: data.author?.avatar || ''
-          }
+    const cleanResult = {
+      status: 'success',
+      result: {
+        downloads: downloads,
+        video: videos,
+        images: images,
+        music: null, // Instagram generally doesn't expose separate audio
+        cover: images.length > 0 ? images[0] : '', // Use first image as cover
+        desc: 'Instagram Post', // Description isn't always available
+        author: {
+          nickname: 'Instagram User', // We don't get author name easily
+          avatar: ''
         }
-      };
+      }
+    };
 
-      console.log('[Instagram] Downloads:', downloads.map(d => d.type));
-      return cleanResult;
-    } else {
-      console.error('Instagram API Error:', responseData);
-      throw new Error(responseData.msg || 'Could not fetch Instagram content.');
-    }
+    console.log(`[Instagram] Found ${downloads.length} items`);
+    return cleanResult;
 
   } catch (error) {
     console.error('Error downloading from Instagram:', error);
-    throw error;
+    throw new Error('Could not fetch Instagram content: ' + error.message);
   }
 }
 
