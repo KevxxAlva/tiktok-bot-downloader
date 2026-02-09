@@ -187,19 +187,19 @@ app.get('/api/proxy-download', async (req, res) => {
     const contentType = response.headers.get('content-type');
     console.log(`[Proxy] Content-Type: ${contentType}`);
 
-    if (contentType && !contentType.includes('video') && !contentType.includes('octet-stream')) {
-        throw new Error('Target is not a video file');
+    if (contentType && !contentType.includes('video') && !contentType.includes('audio') && !contentType.includes('octet-stream')) {
+        console.warn(`[Proxy] Unusual content-type: ${contentType}, proceeding anyway.`);
     }
 
     // We buffer the file to ensure we have it all and can set correct Content-Length
     const arrayBuffer = await response.arrayBuffer();
-    const videoBuffer = Buffer.from(arrayBuffer);
+    const mediaBuffer = Buffer.from(arrayBuffer);
 
     res.setHeader('Content-Disposition', `attachment; filename="${safeFilename}"`);
-    res.setHeader('Content-Type', 'video/mp4');
-    res.setHeader('Content-Length', videoBuffer.length);
+    res.setHeader('Content-Type', contentType || 'application/octet-stream');
+    res.setHeader('Content-Length', mediaBuffer.length);
 
-    res.end(videoBuffer);
+    res.end(mediaBuffer);
     
   } catch (error) {
     console.error('Proxy download error:', error);

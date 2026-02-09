@@ -2,6 +2,11 @@
   "name": "tiktok-downloader",
   "version": "1.0.0",
   "scripts": {
-    "build": "cd client && bun install && bun run build"
+    "install-client": "cd client && bun install",
+    "install-server": "cd api && bun install",
+    "build-client": "cd client && bun run build"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3"
   }
 }
