@@ -53,7 +53,7 @@ const VideoResult = ({ data }: VideoResultProps) => {
                     
                     <button
                       onClick={() => downloadImage(img, idx)}
-                      className="absolute bottom-2 right-2 w-8 h-8 bg-[#ccff00] text-black rounded-full flex items-center justify-center translate-y-10 group-hover:translate-y-0 transition-transform shadow-lg hover:bg-white"
+                      className="absolute bottom-2 right-2 w-8 h-8 bg-[#ccff00] text-black rounded-full flex items-center justify-center translate-y-0 md:translate-y-10 md:group-hover:translate-y-0 transition-transform shadow-lg hover:bg-white"
                       title="Descargar imagen"
                     >
                       <Download className="w-4 h-4" />
