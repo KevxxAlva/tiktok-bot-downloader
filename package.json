@@ -4,7 +4,8 @@
   "scripts": {
     "install-client": "cd client && bun install",
     "install-server": "cd api && bun install",
-    "build-client": "cd client && bun run build"
+    "build-client": "cd client && bun run build",
+    "build": "cd client && bun install && bun run build"
   },
   "devDependencies": {
     "typescript": "^5.9.3"
