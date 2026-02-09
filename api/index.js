@@ -47,15 +47,42 @@ app.get('/api/proxy-image', async (req, res) => {
   }
 });
 
-// Main Download Endpoint using TikWM API
+// Main Download Endpoint - Multi-Platform
 app.get('/api/download', async (req, res) => {
-  const { url } = req.query;
+  const { url, platform = 'tiktok' } = req.query;
 
   if (!url) {
     return res.status(400).json({ status: 'error', error: 'URL is required' });
   }
 
-  console.log(`[${new Date().toISOString()}] Fetching via TikWM: ${url}`);
+  console.log(`[${new Date().toISOString()}] Platform: ${platform}, URL: ${url}`);
+
+  try {
+    let result;
+
+    switch (platform) {
+      case 'instagram':
+        result = await downloadInstagram(url);
+        break;
+      case 'tiktok':
+      default:
+        result = await downloadTikTok(url);
+        break;
+    }
+
+    return res.json(result);
+  } catch (error) {
+    console.error('Download error:', error);
+    return res.status(500).json({ 
+      status: 'error', 
+      error: error.message || 'Failed to process request' 
+    });
+  }
+});
+
+// TikTok Download Function
+async function downloadTikTok(url) {
+  console.log(`[TikWM] Fetching: ${url}`);
 
   try {
     const formData = new FormData();
@@ -122,10 +149,7 @@ app.get('/api/download', async (req, res) => {
       }
 
       if (downloads.length === 0 && (!data.images || data.images.length === 0)) {
-          return res.status(404).json({ 
-              status: 'error', 
-              error: 'Could not find a watermark-free version. The video might be private or region-locked.' 
-          });
+          throw new Error('Could not find a watermark-free version. The video might be private or region-locked.');
       }
 
       const cleanResult = {
@@ -145,21 +169,103 @@ app.get('/api/download', async (req, res) => {
       };
 
       console.log('Sending structured downloads:', downloads.map(d => d.type));
-      return res.json(cleanResult);
+      return cleanResult;
     } else {
        console.error('TikWM Error:', tikData);
-       return res.status(500).json({ 
-           status: 'error', 
-           error: 'Could not fetch video info from provider.',
-           details: tikData.msg 
-       });
+       throw new Error(tikData.msg || 'Could not fetch video info from provider.');
     }
 
   } catch (error) {
-    console.error('Error downloading:', error);
-    res.status(500).json({ status: 'error', error: 'Internal Server Error' });
+    console.error('Error downloading from TikTok:', error);
+    throw error;
   }
-});
+}
+
+// Instagram Download Function
+async function downloadInstagram(url) {
+  console.log(`[Instagram] Fetching: ${url}`);
+
+  try {
+    // Using TikWM API which also supports Instagram
+    const formData = new FormData();
+    formData.append('url', url);
+    formData.append('hd', '1');
+
+    const response = await fetch('https://www.tikwm.com/api/', {
+      method: 'POST',
+      body: formData,
+    });
+
+    const responseData = await response.json();
+
+    if (responseData.code === 0 && responseData.data) {
+      const data = responseData.data;
+      
+      const downloads = [];
+
+      // Instagram video
+      if (data.play) {
+        downloads.push({
+          type: 'normal',
+          label: 'Video HD',
+          url: data.play,
+          size: data.size
+        });
+      } else if (data.hdplay && !data.hdplay.includes('error')) {
+        downloads.push({
+          type: 'normal',
+          label: 'Video HD',
+          url: data.hdplay,
+          size: data.hd_size
+        });
+      }
+
+      // Instagram images (carousel posts)
+      if (data.images && Array.isArray(data.images)) {
+        console.log(`[Instagram] Found ${data.images.length} images`);
+      }
+
+      // Music/Audio
+      if (data.music) {
+        downloads.push({
+          type: 'music',
+          label: 'Audio MP3',
+          url: data.music
+        });
+      }
+
+      if (downloads.length === 0 && (!data.images || data.images.length === 0)) {
+        throw new Error('Could not extract media from this Instagram post.');
+      }
+
+      const cleanResult = {
+        status: 'success',
+        result: {
+          downloads: downloads,
+          video: downloads.length > 0 && downloads[0].type !== 'music' ? [downloads[0].url] : [],
+          images: data.images || [],
+          music: data.music,
+          cover: data.cover,
+          desc: data.title || '',
+          author: {
+            nickname: data.author?.nickname || 'Instagram User',
+            avatar: data.author?.avatar || ''
+          }
+        }
+      };
+
+      console.log('[Instagram] Downloads:', downloads.map(d => d.type));
+      return cleanResult;
+    } else {
+      console.error('Instagram API Error:', responseData);
+      throw new Error(responseData.msg || 'Could not fetch Instagram content.');
+    }
+
+  } catch (error) {
+    console.error('Error downloading from Instagram:', error);
+    throw error;
+  }
+}
 
 // Video Proxy Streamer
 app.get('/api/proxy-download', async (req, res) => {

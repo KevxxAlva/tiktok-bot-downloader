@@ -5,6 +5,7 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import Header from '../components/Header';
 import VideoResult from '../components/VideoResult';
+import PlatformSelector, { type Platform } from '../components/PlatformSelector';
 import type { DownloadResult } from '../types';
 
 function Home() {
@@ -13,6 +14,7 @@ function Home() {
   const [data, setData] = useState<DownloadResult | null>(null);
   const [error, setError] = useState('');
   const [mode, setMode] = useState<'video' | 'audio'>('video');
+  const [platform, setPlatform] = useState<Platform>('tiktok');
 
   const handleDownload = async () => {
     if (!url) return;
@@ -21,7 +23,7 @@ function Home() {
     setData(null);
 
     try {
-      const response = await axios.get(`/api/download?url=${encodeURIComponent(url)}`);
+      const response = await axios.get(`/api/download?url=${encodeURIComponent(url)}&platform=${platform}`);
       if (response.data.status === 'success' || response.data.result) {
         setData(response.data);
       } else {
@@ -50,16 +52,19 @@ function Home() {
           <Waves className="w-16 h-16" strokeWidth={3} />
         </div>
         <h1 className="text-5xl md:text-7xl font-black tracking-tighter uppercase mb-4" style={{ fontFamily: 'Inter, sans-serif' }}>
-          TikTok<br className="md:hidden" /> Downloader
+          Video<br className="md:hidden" /> Downloader
         </h1>
         <p className="text-gray-400 text-sm md:text-base tracking-widest uppercase font-medium max-w-md">
-          Descarga videos sin marca de agua.<br />
-          Velocidad pura. Sin distracciones.
+          Descarga contenido de múltiples plataformas.<br />
+          Sin marca de agua. Velocidad pura.
         </p>
       </motion.div>
 
       {/* Main Container */}
-      <div className="w-full max-w-xl">
+      <div className="w-full max-w-2xl">
+        
+        {/* Platform Selector */}
+        <PlatformSelector selected={platform} onSelect={setPlatform} />
         
         {/* Input Area */}
         <motion.div 
@@ -71,7 +76,7 @@ function Home() {
           <div className="flex flex-col md:flex-row gap-4 mb-6">
             <input
               type="text"
-              placeholder="PEGA EL ENLACE DE TIKTOK AQUÍ..."
+              placeholder={`PEGA EL ENLACE DE ${platform.toUpperCase()} AQUÍ...`}
               className="input-minimal w-full rounded-lg px-6 py-4 text-lg font-bold tracking-wide placeholder:text-gray-600 uppercase"
               value={url}
               onChange={(e) => setUrl(e.target.value)}
