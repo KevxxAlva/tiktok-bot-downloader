@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Music2, Instagram, Facebook, Youtube } from 'lucide-react';
+import { Music2, Instagram, Facebook} from 'lucide-react';
 
 export type Platform = 'tiktok' | 'instagram' | 'facebook' | 'youtube';
 
@@ -30,22 +30,15 @@ const platforms = [
     color: '#1877F2',
     textColor: '#fff'
   },
-  { 
-    id: 'youtube' as Platform, 
-    name: 'YouTube', 
-    icon: Youtube, 
-    color: '#FF0000',
-    textColor: '#fff'
-  },
 ];
 
 const PlatformSelector = ({ selected, onSelect }: PlatformSelectorProps) => {
   return (
-    <div className="w-full max-w-2xl mb-8">
+    <div className="w-full max-w-2xl mb-8 mx-auto">
       <p className="text-gray-500 uppercase text-xs font-bold tracking-[0.2em] mb-4 text-center">
-        Selecciona la plataforma
+        SELECCIONA LA PLATAFORMA
       </p>
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+      <div className="flex flex-wrap justify-center gap-3">
         {platforms.map((platform) => {
           const Icon = platform.icon;
           const isSelected = selected === platform.id;
@@ -60,6 +53,7 @@ const PlatformSelector = ({ selected, onSelect }: PlatformSelectorProps) => {
                 relative overflow-hidden rounded-xl p-4 
                 flex flex-col items-center gap-2
                 transition-all duration-300
+                min-w-[100px] flex-1 max-w-[150px]
                 ${isSelected 
                   ? 'ring-2 ring-offset-2 ring-offset-black' 
                   : 'opacity-50 hover:opacity-75'

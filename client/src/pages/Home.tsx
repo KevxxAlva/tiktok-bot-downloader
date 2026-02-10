@@ -1,9 +1,10 @@
 import { useState } from 'react';
-import { Loader2, Waves, Github } from 'lucide-react';
+import { Loader2, Waves } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import SeoHead from '../components/SeoHead';
 import Header from '../components/Header';
+import Footer from '../components/Footer';
 import VideoResult from '../components/VideoResult';
 import PlatformSelector, { type Platform } from '../components/PlatformSelector';
 import type { DownloadResult } from '../types';
@@ -39,6 +40,10 @@ function Home() {
 
   return (
     <div className="min-h-screen w-full flex flex-col items-center py-10 px-4 relative">
+      <SeoHead 
+        title="Descargador de Video sin Marca de Agua" 
+        description="Descarga videos de TikTok, Instagram y Facebook sin marca de agua. Rápido, gratis y en alta calidad. Compatible con móviles y PC."
+      />
       
       <Header />
       
@@ -46,7 +51,7 @@ function Home() {
       <motion.div 
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="text-center mb-16 flex flex-col items-center"
+        className="text-center mb-10 md:mb-16 flex flex-col items-center"
       >
         <div className="mb-6 text-[#ccff00]">
           <Waves className="w-16 h-16" strokeWidth={3} />
@@ -84,16 +89,16 @@ function Home() {
             />
             
             {/* Mode Switch (Visual Only for now, purely aesthetic) */}
-            <div className="bg-[#1a1a1a] rounded-lg p-1 flex border border-[#333] shrink-0">
+            <div className="bg-[#1a1a1a] rounded-lg p-1 flex border border-[#333] shrink-0 w-full md:w-auto">
               <button 
                 onClick={() => setMode('video')}
-                className={`px-6 py-2 rounded font-bold uppercase text-sm transition-colors ${mode === 'video' ? 'bg-[#ccff00] text-black' : 'text-gray-500 hover:text-white'}`}
+                className={`flex-1 md:flex-none px-6 py-2 rounded font-bold uppercase text-sm transition-colors ${mode === 'video' ? 'bg-[#ccff00] text-black' : 'text-gray-500 hover:text-white'}`}
               >
                 Video
               </button>
               <button 
                 onClick={() => setMode('audio')}
-                className={`px-6 py-2 rounded font-bold uppercase text-sm transition-colors ${mode === 'audio' ? 'bg-[#ccff00] text-black' : 'text-gray-500 hover:text-white'}`}
+                className={`flex-1 md:flex-none px-6 py-2 rounded font-bold uppercase text-sm transition-colors ${mode === 'audio' ? 'bg-[#ccff00] text-black' : 'text-gray-500 hover:text-white'}`}
               >
                 Audio
               </button>
@@ -148,9 +153,9 @@ function Home() {
             
             <div className="grid gap-6">
               {[
-                { step: "01", title: "Copia el Enlace", desc: "Ve a TikTok, busca tu video favorito y copia el enlace desde el botón 'Compartir'." },
+                { step: "01", title: "Copia el Enlace", desc: "Busca el video en tu app favorita y copia el enlace." },
                 { step: "02", title: "Pégalo Arriba", desc: "Pega el enlace en el campo de texto de esta página." },
-                { step: "03", title: "Descarga MP4", desc: "Haz clic en 'Revelar Contenido' y luego en 'Descargar MP4' para guardarlo sin marca de agua." }
+                { step: "03", title: "Descarga", desc: "Haz clic en 'Revelar Contenido' y guarda tu archivo." }
               ].map((item) => (
                 <div key={item.step} className="flex gap-6 items-start group">
                   <span className="text-4xl font-black text-[#1a1a1a] group-hover:text-[#2a2a2a] transition-colors select-none">
@@ -172,9 +177,9 @@ function Home() {
               Enlaces Soportados
             </h3>
             <div className="space-y-2 text-xs font-mono text-gray-500 overflow-hidden">
-              <p className="hover:text-gray-300 transition-colors">https://vm.tiktok.com/ZMe7...</p>
-              <p className="hover:text-gray-300 transition-colors">https://www.tiktok.com/@usuario/video/123456789...</p>
-              <p className="hover:text-gray-300 transition-colors">https://m.tiktok.com/v/123456789.html</p>
+              <p className="hover:text-gray-300 transition-colors">TikTok: https://vm.tiktok.com/ZMe7...</p>
+              <p className="hover:text-gray-300 transition-colors">Instagram: https://www.instagram.com/reel/C...</p>
+              <p className="hover:text-gray-300 transition-colors">Facebook: https://www.facebook.com/watch/?v=...</p>
             </div>
           </div>
 
@@ -186,23 +191,7 @@ function Home() {
         </motion.div>
       </div>
 
-      <footer className="mt-auto pt-20 pb-6 text-center w-full max-w-xl mx-auto border-t border-[#1a1a1a]">
-        <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] md:text-xs text-gray-600 uppercase font-bold tracking-widest">
-          <div className="flex items-center gap-2">
-            <span>© 2026 TikTokSaver</span>
-            <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="hover:text-[#ccff00] transition-colors">
-              <Github className="w-4 h-4 mb-0.5" />
-            </a>
-          </div>
-          <div className="flex gap-4">
-            <Link to="/privacy" className="hover:text-[#ccff00] transition-colors">Política de Privacidad</Link>
-            <Link to="/terms" className="hover:text-[#ccff00] transition-colors">Términos de Servicio</Link>
-          </div>
-        </div>
-        <p className="mt-4 text-[10px] text-gray-700 max-w-md mx-auto">
-          Esta herramienta es solo para fines educativos. No estamos afiliados a TikTok ni a ByteDance Ltd.
-        </p>
-      </footer>
+      <Footer />
     </div>
   );
 }
