@@ -30,25 +30,58 @@ const PrivacyPolicy = () => {
             
             <div className="space-y-8 text-gray-300 leading-relaxed font-light">
               <section>
-                <h2 className="text-white font-bold uppercase tracking-wider mb-3 text-lg">1. Recopilación de Datos</h2>
-                <p>TikTokSaver no recopila, almacena ni comparte información personal de los usuarios. Las URL procesadas se utilizan únicamente para recuperar el contenido solicitado y no se guardan registros permanentes de las mismas.</p>
+                <h2 className="text-white font-bold uppercase tracking-wider mb-3 text-lg">1. Introducción</h2>
+                <p>Bienvenido a TikTokSaver ("nosotros", "nuestro" o "la Plataforma"). Su privacidad es de suma importancia para nosotros. Esta Política de Privacidad explica cómo recopilamos, utilizamos, divulgamos y salvaguardamos su información cuando visita nuestro sitio web y utiliza nuestros servicios de descarga de contenido.</p>
+                <p className="mt-2">Lea detenidamente esta política de privacidad. Si no está de acuerdo con los términos de esta política de privacidad, no acceda al sitio.</p>
               </section>
 
               <section>
-                <h2 className="text-white font-bold uppercase tracking-wider mb-3 text-lg">2. Uso de Cookies</h2>
-                <p>Este sitio no utiliza cookies de rastreo ni herramientas de análisis de terceros. Almacenamos únicamente preferencias locales básicas (como el modo oscuro o idioma) en el almacenamiento local de su navegador si es necesario.</p>
+                <h2 className="text-white font-bold uppercase tracking-wider mb-3 text-lg">2. Recopilación de Información</h2>
+                <p>Nuestro servicio está diseñado para funcionar sin requerir el registro de usuarios ni la recopilación de información de identificación personal (PII). No solicitamos nombres, correos electrónicos ni números de teléfono.</p>
+                <ul className="list-disc pl-5 mt-2 space-y-1">
+                  <li><strong>Datos de Uso:</strong> Podemos recopilar información anónima sobre cómo se accede y utiliza el Servicio ("Datos de Uso"). Estos Datos de Uso pueden incluir información como la dirección de Protocolo de Internet (IP) de su computadora (de forma anonimizada), tipo de navegador, versión del navegador, las páginas de nuestro Servicio que visita, la hora y fecha de su visita y el tiempo dedicado a esas páginas.</li>
+                  <li><strong>URLs Procesadas:</strong> Las URLs de los videos que usted ingresa para descargar se envían a nuestros servidores únicamente con el propósito de procesar la solicitud. No mantenemos un historial vinculado a usuarios específicos de estas descargas.</li>
+                </ul>
               </section>
 
               <section>
-                <h2 className="text-white font-bold uppercase tracking-wider mb-3 text-lg">3. Servicios de Terceros</h2>
-                <p>Esta aplicación actúa como un intermediario para procesar contenido público de TikTok. Al utilizar este servicio, usted también está sujeto a los términos y políticas de la plataforma de origen.</p>
+                <h2 className="text-white font-bold uppercase tracking-wider mb-3 text-lg">3. Uso de la Información</h2>
+                <p>La información limitada que recopilamos se utiliza para:</p>
+                <ul className="list-disc pl-5 mt-2 space-y-1">
+                  <li>Proporcionar y mantener nuestro Servicio.</li>
+                  <li>Detectar, prevenir y abordar problemas técnicos.</li>
+                  <li>Monitorizar el uso del Servicio para mejorar la experiencia del usuario.</li>
+                  <li>Defender nuestros derechos legales y proteger la seguridad de los usuarios.</li>
+                </ul>
               </section>
 
               <section>
-                <h2 className="text-white font-bold uppercase tracking-wider mb-3 text-lg">4. Cambios en la Política</h2>
-                <p>Nos reservamos el derecho de modificar esta política en cualquier momento. Los cambios serán efectivos inmediatamente después de su publicación en esta página.</p>
+                <h2 className="text-white font-bold uppercase tracking-wider mb-3 text-lg">4. Cookies y Tecnologías de Rastreo</h2>
+                <p>No utilizamos cookies invasivas ni rastreadores publicitarios. Podemos utilizar almacenamiento local (LocalStorage) o cookies de sesión esenciales para recordar sus preferencias de configuración (como el idioma o el tema oscuro) y asegurar el correcto funcionamiento técnico del sitio.</p>
+              </section>
+
+              <section>
+                <h2 className="text-white font-bold uppercase tracking-wider mb-3 text-lg">5. Servicios de Terceros</h2>
+                <p>Nuestro servicio interactúa con plataformas de terceros (como TikTok, Instagram, Facebook) para recuperar el contenido solicitado. No somos responsables de las prácticas de privacidad de estos sitios de terceros. Le recomendamos revisar las políticas de privacidad de cualquier sitio que visite.</p>
+                <p className="mt-2">Podemos utilizar servicios de análisis de terceros anónimos (como estadísticas de servidor) para evaluar el tráfico, pero estos datos no se cruzan con perfiles de usuarios individuales.</p>
+              </section>
+
+              <section>
+                <h2 className="text-white font-bold uppercase tracking-wider mb-3 text-lg">6. Seguridad de los Datos</h2>
+                <p>Valoramos su confianza al proporcionarnos su información, por lo que nos esforzamos por utilizar medios comercialmente aceptables para protegerla. Sin embargo, recuerde que ningún método de transmisión a través de Internet o método de almacenamiento electrónico es 100% seguro y confiable, y no podemos garantizar su seguridad absoluta.</p>
+              </section>
+
+              <section>
+                <h2 className="text-white font-bold uppercase tracking-wider mb-3 text-lg">7. Privacidad de los Menores</h2>
+                <p>Nuestros Servicios no están dirigidos a personas menores de 13 años. No recopilamos a sabiendas información de identificación personal de niños menores de 13 años. Si descubrimos que un niño menor de 13 años nos ha proporcionado información personal, la eliminamos inmediatamente de nuestros servidores.</p>
+              </section>
+
+              <section>
+                <h2 className="text-white font-bold uppercase tracking-wider mb-3 text-lg">8. Cambios a Esta Política</h2>
+                <p>Podemos actualizar nuestra Política de Privacidad de vez en cuando. Le recomendamos que revise esta página periódicamente para ver si hay cambios. Le notificaremos de cualquier cambio publicando la nueva Política de Privacidad en esta página. Estos cambios son efectivos inmediatamente después de su publicación.</p>
               </section>
             </div>
+
           </motion.div>
         </div>
       </main>

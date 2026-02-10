@@ -31,24 +31,52 @@ const TermsOfService = () => {
             <div className="space-y-8 text-gray-300 leading-relaxed font-light">
               <section>
                 <h2 className="text-white font-bold uppercase tracking-wider mb-3 text-lg">1. Aceptación de los Términos</h2>
-                <p>Al acceder y utilizar TikTokSaver, usted acepta estar sujeto a estos Términos de Servicio. Si no está de acuerdo con alguna parte de los términos, no podrá acceder al servicio.</p>
+                <p>Al acceder y utilizar el sitio web y los servicios de TikTokSaver ("Servicio"), usted acepta cumplir y estar legalmente obligado por los términos y condiciones de estos Términos de Servicio ("Términos"). Si no acepta estos Términos, no debe acceder ni utilizar el Servicio.</p>
               </section>
 
               <section>
-                <h2 className="text-white font-bold uppercase tracking-wider mb-3 text-lg">2. Uso Educativo</h2>
-                <p>Esta herramienta ha sido creada exclusivamente con fines educativos y de demostración técnica. El usuario es el único responsable del uso que haga del contenido descargado.</p>
+                <h2 className="text-white font-bold uppercase tracking-wider mb-3 text-lg">2. Descripción del Servicio</h2>
+                <p>TikTokSaver es una herramienta basada en la web que permite a los usuarios descargar videos y audio de plataformas de redes sociales (como TikTok, Instagram, Facebook) para uso personal, educativo y no comercial. El Servicio se proporciona "tal cual" y "según disponibilidad".</p>
               </section>
 
               <section>
-                <h2 className="text-white font-bold uppercase tracking-wider mb-3 text-lg">3. Propiedad Intelectual</h2>
-                <p>No reclamamos ningún derecho de propiedad sobre los videos descargados a través de este servicio. Todo el contenido pertenece a sus respectivos creadores y a la plataforma TikTok. Respetamos los derechos de propiedad intelectual y esperamos que nuestros usuarios hagan lo mismo.</p>
+                <h2 className="text-white font-bold uppercase tracking-wider mb-3 text-lg">3. Uso Permitido y Restricciones</h2>
+                <p>Usted acepta utilizar el Servicio únicamente para fines legales y de acuerdo con estos Términos.</p>
+                <ul className="list-disc pl-5 mt-2 space-y-1">
+                  <li><strong>Uso Personal:</strong> Las descargas deben ser estrictamente para uso personal, educativo o de archivo privado.</li>
+                  <li><strong>Respeto a los Derechos de Autor:</strong> Usted no debe utilizar este Servicio para infringir los derechos de propiedad intelectual de terceros. La descarga y redistribución de contenido protegido por derechos de autor sin el permiso del propietario está estrictamente prohibida.</li>
+                  <li><strong>Prohibiciones:</strong> No debe utilizar el Servicio para descargar contenido ilegal, dañino, amenazante, abusivo, acosador, difamatorio, vulgar, obsceno, invasivo de la privacidad de otros o que incite al odio.</li>
+                </ul>
               </section>
 
               <section>
-                <h2 className="text-white font-bold uppercase tracking-wider mb-3 text-lg">4. Limitación de Responsabilidad</h2>
-                <p>TikTokSaver se proporciona "tal cual", sin garantías de ningún tipo. No seremos responsables de ningún daño, directo o indirecto, que surja del uso o la imposibilidad de uso de este servicio.</p>
+                <h2 className="text-white font-bold uppercase tracking-wider mb-3 text-lg">4. Propiedad Intelectual</h2>
+                <p>Todos los derechos, títulos e intereses en y para el Servicio (excluyendo el contenido proporcionado por los usuarios o terceros) son y seguirán siendo propiedad exclusiva de TikTokSaver y sus licenciantes. El contenido descargado a través de nuestro servicio sigue siendo propiedad de sus respectivos creadores y alojado en las plataformas de origen.</p>
+                <p className="mt-2">No estamos afiliados, asociados, autorizados, respaldados ni conectados oficialmente de ninguna manera con TikTok, ByteDance Ltd., Facebook, Meta, Instagram o cualquiera de sus subsidiarias o afiliadas.</p>
+              </section>
+
+              <section>
+                <h2 className="text-white font-bold uppercase tracking-wider mb-3 text-lg">5. Descargo de Responsabilidad de Garantías</h2>
+                <p>El uso del Servicio es bajo su propio riesgo. El Servicio se proporciona sin garantías de ningún tipo, ya sean expresas o implícitas, incluidas, entre otras, las garantías implícitas de comerciabilidad, idoneidad para un propósito particular, no infracción o curso de ejecución.</p>
+                <p className="mt-2">TikTokSaver no garantiza que a) el Servicio funcionará ininterrumpidamente, será seguro o estará disponible en cualquier momento o lugar en particular; b) se corregirá cualquier error o defecto; o c) los resultados del uso del Servicio cumplirán con sus requisitos.</p>
+              </section>
+
+              <section>
+                <h2 className="text-white font-bold uppercase tracking-wider mb-3 text-lg">6. Limitación de Responsabilidad</h2>
+                <p>En ningún caso TikTokSaver, ni sus directores, empleados, socios, agentes, proveedores o afiliados, serán responsables de daños indirectos, incidentales, especiales, consecuentes o punitivos, incluidos, entre otros, pérdida de beneficios, datos, uso, buena voluntad u otras pérdidas intangibles, resultantes de su acceso o uso o la imposibilidad de acceder o usar el Servicio.</p>
+              </section>
+
+              <section>
+                <h2 className="text-white font-bold uppercase tracking-wider mb-3 text-lg">7. Modificaciones al Servicio</h2>
+                <p>Nos reservamos el derecho de retirar o modificar nuestro Servicio, y cualquier servicio o material que proporcionemos, a nuestra entera discreción y sin previo aviso. No seremos responsables si, por cualquier motivo, todo o parte del Servicio no está disponible en cualquier momento o durante cualquier período.</p>
+              </section>
+
+              <section>
+                <h2 className="text-white font-bold uppercase tracking-wider mb-3 text-lg">8. Ley Aplicable</h2>
+                <p>Estos Términos se regirán e interpretarán de acuerdo con las leyes vigentes, sin tener en cuenta sus disposiciones sobre conflictos de leyes. Nuestra falta de hacer valer cualquier derecho o disposición de estos Términos no se considerará una renuncia a esos derechos.</p>
               </section>
             </div>
+
           </motion.div>
         </div>
       </main>
