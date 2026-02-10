@@ -1,4 +1,4 @@
-import { Github } from 'lucide-react';
+import { Mail } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const Footer = () => {
@@ -7,8 +7,8 @@ const Footer = () => {
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] md:text-xs text-gray-600 uppercase font-bold tracking-widest">
           <div className="flex items-center gap-2">
             <span>© 2026 TikTokSaver</span>
-            <a href="https://github.com/KevxxAlva/tiktok-bot-downloader" target="_blank" rel="noopener noreferrer" aria-label="GitHub Repository" className="hover:text-[#ccff00] transition-colors">
-              <Github className="w-4 h-4 mb-0.5" />
+            <a href="mailto:kevinja1406@gmail.com" aria-label="Contact Email" className="hover:text-[#ccff00] transition-colors">
+              <Mail className="w-4 h-4 mb-0.5" />
             </a>
           </div>
           <div className="flex gap-4">

@@ -1,4 +1,4 @@
-import { Waves, Github } from 'lucide-react';
+import { Waves, Mail } from 'lucide-react';
 
 const Header = () => (
   <nav className="w-full max-w-5xl flex justify-between items-center mb-20 scroll-smooth">
@@ -12,13 +12,11 @@ const Header = () => (
     <div className="flex items-center gap-6 text-sm font-bold uppercase tracking-wider text-gray-500">
       <a href="#Guia" className="hover:text-[#ccff00] transition-colors hidden md:block">Cómo funciona</a>
       <a
-        href="https://github.com/KevxxAlva/tiktok-bot-downloader"
-        target="_blank"
-        rel="noreferrer"
-        aria-label="GitHub Repository"
+        href="mailto:kevinja1406@gmail.com"
+        aria-label="Contact Email"
         className="text-white hover:text-[#ccff00] transition-colors"
       >
-        <Github className="w-6 h-6" />
+        <Mail className="w-6 h-6" />
       </a>
     </div>
   </nav>
