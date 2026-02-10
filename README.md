@@ -2,7 +2,7 @@
 
 Una aplicación web minimalista de alto rendimiento para descargar videos de TikTok sin marca de agua y extraer audio (MP3).
 
-<img width="1351" height="639" alt="image" src="https://github.com/user-attachments/assets/7ca0bb90-5b2e-4740-92de-87aa7e77e82d" />
+<img width="1350" height="640" alt="image" src="https://github.com/user-attachments/assets/63bfac12-c366-4e1a-a584-44adad91920e" />
 
 ## ⚡ Características
 
