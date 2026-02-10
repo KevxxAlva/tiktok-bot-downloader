@@ -1,28 +1,38 @@
 import '@testing-library/jest-dom';
+import { vi } from 'vitest';
 
 // Polyfill for matchMedia
-global.matchMedia = global.matchMedia || function () {
-  return {
+Object.defineProperty(window, 'matchMedia', {
+  writable: true,
+  value: vi.fn().mockImplementation(query => ({
     matches: false,
-    addListener: function () {},
-    removeListener: function () {},
-  };
-};
+    media: query,
+    onchange: null,
+    addListener: vi.fn(), // deprecated
+    removeListener: vi.fn(), // deprecated
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn(),
+    dispatchEvent: vi.fn(),
+  })),
+});
 
-// Polyfill for ResizeObserver (needed for framer-motion?)
-global.ResizeObserver = class ResizeObserver {
+// Polyfill for ResizeObserver
+globalThis.ResizeObserver = class ResizeObserver {
   observe() {}
   unobserve() {}
   disconnect() {}
 };
 
 // Polyfill for IntersectionObserver
-global.IntersectionObserver = class IntersectionObserver {
-  root = null;
-  rootMargin = '';
-  thresholds = [];
-  disconnect() { return null; }
-  observe() { return null; }
+globalThis.IntersectionObserver = class IntersectionObserver {
+  readonly root: Element | Document | null = null;
+  readonly rootMargin: string = '';
+  readonly thresholds: ReadonlyArray<number> = [];
+  
+  constructor() {}
+
+  disconnect() {}
+  observe() {}
   takeRecords() { return []; }
-  unobserve() { return null; }
+  unobserve() {}
 };
