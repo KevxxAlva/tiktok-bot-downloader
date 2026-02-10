@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://tiktok-bot-downloader-zeta.vercel.app/sitemap.xml
