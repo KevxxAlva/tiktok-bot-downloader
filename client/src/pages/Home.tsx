@@ -76,7 +76,7 @@ function Home() {
             transition={{ delay: 0.2 }}
             className="mb-10"
           >
-            <div className="flex flex-col md:flex-row gap-4 mb-6">
+            <div className="flex flex-col md:flex-row gap-4 mb-6 items-center">
               <input
                 type="text"
                 placeholder="PEGA EL ENLACE DE TIKTOK AQUÍ..."
