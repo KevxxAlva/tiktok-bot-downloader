@@ -7,6 +7,8 @@ import Header from '../components/Header';
 import VideoResult from '../components/VideoResult';
 import type { DownloadResult } from '../types';
 
+import SeoHead from '../components/SeoHead';
+
 function Home() {
   const [url, setUrl] = useState('');
   const [loading, setLoading] = useState(false);
@@ -37,6 +39,11 @@ function Home() {
 
   return (
     <div className="min-h-screen w-full flex flex-col items-center py-10 px-4 relative">
+      <SeoHead 
+        title="Descargador de Video sin Marca de Agua" 
+        description="Descarga videos de TikTok, Instagram y Facebook sin marca de agua. Rápido, gratis y en alta calidad. Compatible con móviles y PC."
+        url="/"
+      />
       
       <Header />
       
