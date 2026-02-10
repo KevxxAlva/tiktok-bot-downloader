@@ -2,7 +2,11 @@
 
 Una aplicación web de alto rendimiento y diseño minimalista ("Cyber-Brutalist") diseñada para descargar contenido multimedia (video y audio) de TikTok, Instagram y Facebook sin marcas de agua.
 
+<<<<<<< HEAD
 <img width="1350" height="641" alt="App Screenshot" src="https://github.com/user-attachments/assets/ce7886bb-a9b7-4572-be67-9b2ef306d0a8" />
+=======
+<img width="1349" height="641" alt="image" src="https://github.com/user-attachments/assets/1eac6070-6ee4-4962-a269-6830339c71cc" />
+>>>>>>> 5cb7b0fa20b0e2a7228685954cbe0a90d1be0bfd
 
 ## ⚡ Características Principales
 
