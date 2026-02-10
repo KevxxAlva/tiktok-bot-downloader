@@ -2,10 +2,16 @@
 import { motion } from 'framer-motion';
 import { Waves, ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import SeoHead from '../components/SeoHead';
 
 const PrivacyPolicy = () => {
   return (
     <div className="min-h-screen w-full flex flex-col items-center py-20 px-4">
+      <SeoHead 
+        title="Política de Privacidad" 
+        description="Política de privacidad de TikTokSaver. Conoce cómo protegemos tus datos y respetamos tu privacidad."
+        url="/privacy-policy"
+      />
       <div className="w-full max-w-2xl">
         <Link to="/" className="inline-flex items-center gap-2 text-gray-500 hover:text-[#ccff00] transition-colors mb-8 uppercase font-bold text-xs tracking-widest">
           <ArrowLeft className="w-4 h-4" /> Volver al Inicio
@@ -46,7 +52,7 @@ const PrivacyPolicy = () => {
       </div>
       
       <footer className="mt-auto py-8 text-center border-t border-[#1a1a1a] w-full">
-        <p className="text-gray-700 text-xs uppercase font-bold tracking-widest">© 2026 TikTokSaver</p>
+        <p className="text-gray-700 text-xs uppercase font-bold tracking-widest">© 2026 UNIVERSAL DOWNLOADER</p>
       </footer>
     </div>
   );
