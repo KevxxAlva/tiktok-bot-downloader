@@ -7,6 +7,7 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+
 app.use(cors());
 app.use(express.json());
 
@@ -63,6 +64,9 @@ app.get('/api/download', async (req, res) => {
     switch (platform) {
       case 'instagram':
         result = await downloadInstagram(url);
+        break;
+      case 'facebook':
+        result = await downloadFacebook(url);
         break;
       case 'tiktok':
       default:
@@ -246,6 +250,66 @@ async function downloadInstagram(url) {
   } catch (error) {
     console.error('Error downloading from Instagram:', error);
     throw new Error('Could not fetch Instagram content: ' + error.message);
+  }
+}
+
+// Facebook Download Function
+// Facebook Download Function (using fb-downloader-scrapper)
+async function downloadFacebook(url) {
+  const { getFbVideoInfo } = require("fb-downloader-scrapper");
+  console.log(`[Facebook] Fetching: ${url}`);
+
+  try {
+    const data = await getFbVideoInfo(url);
+
+    if (!data.sd && !data.hd) {
+       console.error('Facebook library response:', data);
+       throw new Error('No video found or video is private/unavailable.');
+    }
+
+    const downloads = [];
+    let videoUrl = null;
+
+    if (data.hd) {
+      downloads.push({
+        type: 'normal',
+        label: 'Video HD',
+        url: data.hd,
+        size: null
+      });
+      videoUrl = data.hd;
+    }
+
+    if (data.sd) {
+      downloads.push({
+        type: 'normal',
+        label: 'Video SD',
+        url: data.sd,
+        size: null
+      });
+      if (!videoUrl) videoUrl = data.sd;
+    }
+
+    return {
+      status: 'success',
+      result: {
+        downloads: downloads,
+        video: [videoUrl],
+        images: [],
+        music: null,
+        cover: data.thumbnail || '', 
+        desc: data.title || 'Facebook Video',
+        author: {
+          nickname: 'Facebook User',
+          avatar: ''
+        }
+      }
+    };
+
+  } catch (error) {
+    console.error('Error downloading from Facebook:', error);
+    const message = error.message || (typeof error === 'string' ? error : 'Unknown error');
+    throw new Error('Could not fetch Facebook video: ' + message);
   }
 }
 
