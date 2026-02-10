@@ -15,6 +15,7 @@ const Header = () => (
         href="https://github.com/KevxxAlva/tiktok-bot-downloader"
         target="_blank"
         rel="noreferrer"
+        aria-label="GitHub Repository"
         className="text-white hover:text-[#ccff00] transition-colors"
       >
         <Github className="w-6 h-6" />
